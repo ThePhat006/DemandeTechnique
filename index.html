@@ -1,0 +1,283 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.dk{--bg0:#1a1a1f;--bg1:#23232a;--bg2:#2c2c36;--bg3:#35353f;--bd:#3a3a46;--tx1:#e8e8ec;--tx2:#9b9ba8;--tx3:#5e5e6e;--acc:#5B5EA6;--acc2:#7b7ed4;color:var(--tx1);font-family:var(--font-sans);font-size:13px;background:var(--bg0);border-radius:12px;overflow:hidden;min-height:620px;display:flex;flex-direction:column}
+.topbar{background:var(--bg1);border-bottom:1px solid var(--bd);padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0}
+.topbar-l{display:flex;align-items:center;gap:10px}
+.teams-pill{background:var(--acc);color:#fff;font-size:11px;padding:3px 9px;border-radius:5px;font-weight:500;letter-spacing:.02em}
+.topbar h1{font-size:15px;font-weight:500;color:var(--tx1)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:5px;vertical-align:middle;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.topbar-r{display:flex;gap:8px;align-items:center}
+.search-box{background:var(--bg2);border:1px solid var(--bd);border-radius:7px;padding:6px 12px;color:var(--tx1);font-size:13px;width:160px}
+.search-box::placeholder{color:var(--tx3)}
+.search-box:focus{outline:none;border-color:var(--acc)}
+.btn-new{background:var(--acc);color:#fff;border:none;border-radius:7px;padding:6px 14px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px}
+.btn-new:hover{background:var(--acc2)}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 18px;flex-shrink:0}
+.mcard{background:var(--bg1);border:1px solid var(--bd);border-radius:9px;padding:12px 14px}
+.mcard-lbl{font-size:11px;color:var(--tx2);margin-bottom:4px}
+.mcard-val{font-size:22px;font-weight:500;color:var(--tx1)}
+.mcard-sub{font-size:11px;margin-top:2px}
+.body{display:flex;flex:1;gap:12px;padding:0 18px 18px;min-height:0}
+.left-panel{flex:1;background:var(--bg1);border:1px solid var(--bd);border-radius:10px;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.right-panel{width:268px;flex-shrink:0;background:var(--bg1);border:1px solid var(--bd);border-radius:10px;display:flex;flex-direction:column;overflow:hidden}
+.panel-hdr{padding:10px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.panel-hdr-title{font-size:13px;font-weight:500;color:var(--tx1)}
+.filters{display:flex;gap:5px}
+.fb{background:var(--bg2);border:1px solid var(--bd);border-radius:20px;padding:4px 11px;font-size:12px;color:var(--tx2);cursor:pointer;transition:all .12s}
+.fb:hover{color:var(--tx1)}
+.fb.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.tlist{overflow-y:auto;flex:1}
+.tick{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s}
+.tick:hover{background:var(--bg2)}
+.tick.sel{background:#2e2e3d}
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
+.tick-body{flex:1;min-width:0}
+.tick-row1{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.tid{font-size:11px;color:var(--tx3);flex-shrink:0}
+.ttitle{font-size:13px;font-weight:500;color:var(--tx1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500;flex-shrink:0}
+.b-new{background:#1e3a5f;color:#5ba3e8}
+.b-prog{background:#3d2e10;color:#e09a3a}
+.b-done{background:#1a3020;color:#4caf72}
+.b-urg{background:#3d1b1b;color:#e05555}
+.tick-row2{display:flex;gap:10px;font-size:11px;color:var(--tx2)}
+.prio-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
+.detail{padding:14px;flex:1;overflow-y:auto}
+.det-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--tx3);gap:8px}
+.det-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.det-sub{font-size:11px;color:var(--tx2);margin-bottom:4px}
+.det-title{font-size:15px;font-weight:500;color:var(--tx1)}
+.flabel{font-size:10px;color:var(--tx2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;margin-top:10px}
+.fval{font-size:13px;color:var(--tx1)}
+.sep{border:none;border-top:1px solid var(--bd);margin:12px 0}
+.cmmt{background:var(--bg2);border-radius:7px;padding:8px 10px;margin-bottom:7px}
+.cmmt-auth{font-size:11px;font-weight:500;color:var(--tx1);margin-bottom:2px}
+.cmmt-txt{font-size:12px;color:var(--tx2);line-height:1.5}
+.cmmt-time{font-size:11px;color:var(--tx3);margin-top:2px}
+.act-item{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px solid var(--bd)}
+.act-icon{width:22px;height:22px;border-radius:50%;background:#1e3a5f;color:#5ba3e8;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.act-txt{font-size:12px;color:var(--tx2);flex:1;line-height:1.4}
+.cbar{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--bd);flex-shrink:0}
+.cinput{flex:1;background:var(--bg2);border:1px solid var(--bd);border-radius:7px;padding:7px 10px;color:var(--tx1);font-size:12px}
+.cinput::placeholder{color:var(--tx3)}
+.cinput:focus{outline:none;border-color:var(--acc)}
+.cbtn{background:var(--acc);color:#fff;border:none;border-radius:7px;padding:7px 11px;cursor:pointer;font-size:14px}
+.cbtn:hover{background:var(--acc2)}
+.status-sel{background:var(--bg2);border:1px solid var(--bd);border-radius:6px;padding:5px 8px;color:var(--tx1);font-size:12px;font-weight:500;cursor:pointer;width:100%;margin-top:3px}
+.status-sel:focus{outline:none;border-color:var(--acc)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.modal-wrap{display:none;position:absolute;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:50;border-radius:12px}
+.modal-wrap.open{display:flex}
+.modal{background:var(--bg1);border:1px solid var(--bd);border-radius:11px;padding:20px;width:400px;max-width:95%}
+.modal h2{font-size:15px;font-weight:500;color:var(--tx1);margin-bottom:16px}
+.fgroup{margin-bottom:11px}
+.fgroup label{display:block;font-size:11px;color:var(--tx2);margin-bottom:4px}
+.fgroup input,.fgroup select,.fgroup textarea{width:100%;background:var(--bg2);border:1px solid var(--bd);border-radius:7px;padding:8px 10px;color:var(--tx1);font-size:13px;font-family:var(--font-sans)}
+.fgroup input:focus,.fgroup select:focus,.fgroup textarea:focus{outline:none;border-color:var(--acc)}
+.fgroup textarea{resize:vertical;min-height:70px}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.btn-cancel{background:var(--bg2);color:var(--tx2);border:1px solid var(--bd);border-radius:7px;padding:7px 14px;font-size:13px;cursor:pointer}
+.btn-cancel:hover{color:var(--tx1)}
+.btn-submit{background:var(--acc);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px}
+.btn-submit:hover{background:var(--acc2)}
+.notif{position:absolute;bottom:16px;right:16px;background:#22c55e;color:#fff;padding:9px 15px;border-radius:8px;font-size:12px;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none}
+.notif.show{opacity:1}
+</style>
+
+<h2 class="sr-only">Gestion des demandes</h2>
+
+<div class="dk" id="app" style="position:relative">
+
+<div class="topbar">
+  <div class="topbar-l">
+    <span class="teams-pill">Teams</span>
+    <i class="ti ti-ticket" aria-hidden="true" style="font-size:17px;color:#9b9ba8"></i>
+    <h1>Gestion des demandes</h1>
+    <span style="font-size:12px;color:#9b9ba8"><span class="live-dot"></span>En direct</span>
+  </div>
+  <div class="topbar-r">
+    <input class="search-box" id="searchInput" type="text" placeholder="Rechercher…">
+    <button class="btn-new" onclick="openModal()"><i class="ti ti-plus" aria-hidden="true"></i> Nouvelle demande</button>
+  </div>
+</div>
+
+<div class="metrics" id="metricsBar"></div>
+
+<div class="body">
+  <div class="left-panel">
+    <div class="panel-hdr">
+      <span class="panel-hdr-title">Toutes les demandes</span>
+      <div class="filters">
+        <button class="fb on" onclick="setFilter('all',this)">Tout</button>
+        <button class="fb" onclick="setFilter('Nouveau',this)">Nouveaux</button>
+        <button class="fb" onclick="setFilter('En cours',this)">En cours</button>
+        <button class="fb" onclick="setFilter('Résolu',this)">Résolus</button>
+        <button class="fb" onclick="setFilter('Urgent',this)">Urgents</button>
+      </div>
+    </div>
+    <div class="tlist" id="tlist"></div>
+  </div>
+
+  <div class="right-panel">
+    <div class="panel-hdr">
+      <span class="panel-hdr-title" id="rpTitle">Détail</span>
+    </div>
+    <div class="detail" id="detail">
+      <div class="det-empty"><i class="ti ti-click" style="font-size:30px;opacity:.25"></i><span style="font-size:12px">Sélectionnez un ticket</span></div>
+    </div>
+    <div id="cbar" style="display:none" class="cbar">
+      <input class="cinput" type="text" id="cinput" placeholder="Ajouter un commentaire…">
+      <button class="cbtn" onclick="addComment()" aria-label="Envoyer"><i class="ti ti-send" aria-hidden="true" style="font-size:14px"></i></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-wrap" id="modal">
+  <div class="modal">
+    <h2><i class="ti ti-plus" aria-hidden="true"></i> Nouvelle demande</h2>
+    <div class="fgroup"><label>Titre</label><input type="text" id="fTitle" placeholder="Ex: Problème de connexion VPN"></div>
+    <div class="fgroup"><label>Type</label><select id="fType"><option>IT / Support</option><option>RH / Administration</option><option>Infrastructure</option><option>Logiciel</option><option>Accès / Permissions</option></select></div>
+    <div class="fgroup"><label>Priorité</label><select id="fPrio"><option>Normale</option><option>Haute</option><option>Urgente</option></select></div>
+    <div class="fgroup"><label>Demandeur</label><input type="text" id="fUser" placeholder="Votre nom"></div>
+    <div class="fgroup"><label>Description</label><textarea id="fDesc" placeholder="Décrivez votre demande…"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+      <button class="btn-submit" onclick="submitTicket()"><i class="ti ti-check" aria-hidden="true"></i> Soumettre</button>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+</div>
+
+<script>
+const avColors=[['#1e3a5f','#5ba3e8'],['#3d2e10','#e09a3a'],['#1a3020','#4caf72'],['#3d1b1b','#e05555'],['#2e1a3d','#9b7dd4'],['#0f3030','#3dbfb0']];
+const scls={Nouveau:'b-new','En cours':'b-prog',Résolu:'b-done',Urgent:'b-urg'};
+const pclr={Normale:'#4caf72',Haute:'#e09a3a',Urgente:'#e05555'};
+let cnt=1007,selId=null,flt='all',srch='';
+
+let tickets=[
+  {id:'DEM-1001',title:'Impossible de se connecter au VPN depuis hier',type:'IT / Support',status:'Urgent',prio:'Urgente',user:'Marc Leblanc',team:'Infrastructure',date:'28 mai, 09:14',desc:'Plusieurs utilisateurs du bureau de Gatineau signalent une impossibilité de connexion au VPN. Erreur 800.',comments:[{a:'Sophie T.',t:'Ticket reçu, escalade en cours.',d:'09:22'}],act:['Ticket créé — 09:14','Assigné à Sophie T. — 09:18']},
+  {id:'DEM-1002',title:'Mise à jour des droits d\'accès SharePoint',type:'Accès / Permissions',status:'En cours',prio:'Normale',user:'Julie Morin',team:'RH',date:'28 mai, 08:45',desc:'Besoin d\'ajout de 3 membres à l\'équipe Marketing avec accès contributeur.',comments:[{a:'Admin IT',t:'En cours de traitement, délai estimé 1h.',d:'09:05'}],act:['Ticket créé — 08:45','En cours — 09:00']},
+  {id:'DEM-1003',title:'Nouveau poste à configurer — salle B12',type:'IT / Support',status:'Nouveau',prio:'Normale',user:'Patrick Gagnon',team:'Logistique',date:'27 mai, 16:30',desc:'Déploiement d\'un nouveau poste Windows 11, salle B12. Office 365 requis.',comments:[],act:['Ticket créé — 16:30']},
+  {id:'DEM-1004',title:'Logiciel de paie — erreur lors de l\'export',type:'Logiciel',status:'En cours',prio:'Haute',user:'Nathalie Côté',team:'RH',date:'27 mai, 14:10',desc:'L\'export CSV génère une erreur depuis la dernière mise à jour.',comments:[{a:'Dev Support',t:'Patch disponible demain matin.',d:'15:00'},{a:'Nathalie C.',t:'Merci, on attend le patch.',d:'15:05'}],act:['Ticket créé — 14:10','Escaladé — 14:45','En cours — 15:00']},
+  {id:'DEM-1005',title:'Réinitialisation mot de passe — compte bloqué',type:'Accès / Permissions',status:'Résolu',prio:'Normale',user:'Éric Lavoie',team:'Ventes',date:'27 mai, 10:00',desc:'Compte AD bloqué. Réinitialisation requise.',comments:[{a:'Admin IT',t:'Compte débloqué, nouveau mdp envoyé.',d:'10:18'}],act:['Ticket créé — 10:00','Résolu — 10:18']},
+  {id:'DEM-1006',title:'Imprimante réseau hors ligne — étage 3',type:'Infrastructure',status:'Résolu',prio:'Normale',user:'Carole Fleury',team:'Comptabilité',date:'26 mai, 11:30',desc:'HP LaserJet Pro 402 non détectée sur le réseau.',comments:[{a:'Tech Support',t:'Reconfiguration IP effectuée. Résolu.',d:'13:00'}],act:['Ticket créé — 11:30','En cours — 12:10','Résolu — 13:00']},
+  {id:'DEM-1007',title:'Demande de licences Teams supplémentaires',type:'Logiciel',status:'Nouveau',prio:'Haute',user:'Direction IT',team:'IT',date:'28 mai, 07:00',desc:'5 nouvelles licences Microsoft Teams nécessaires pour l\'équipe de projet Horizon.',comments:[],act:['Ticket créé — 07:00']},
+];
+
+function ini(n){const i=n.charCodeAt(0)%avColors.length;return avColors[i]}
+function initials(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+
+function renderMetrics(){
+  const t=tickets.length,nv=tickets.filter(x=>x.status==='Nouveau').length,ec=tickets.filter(x=>x.status==='En cours').length,ug=tickets.filter(x=>x.status==='Urgent').length;
+  document.getElementById('metricsBar').innerHTML=`
+    <div class="mcard"><div class="mcard-lbl">Total</div><div class="mcard-val">${t}</div><div class="mcard-sub" style="color:#5e5e6e">demandes</div></div>
+    <div class="mcard"><div class="mcard-lbl">Nouveaux</div><div class="mcard-val" style="color:#5ba3e8">${nv}</div><div class="mcard-sub" style="color:#5ba3e8">en attente</div></div>
+    <div class="mcard"><div class="mcard-lbl">En cours</div><div class="mcard-val" style="color:#e09a3a">${ec}</div><div class="mcard-sub" style="color:#e09a3a">actifs</div></div>
+    <div class="mcard"><div class="mcard-lbl">Urgents</div><div class="mcard-val" style="color:#e05555">${ug}</div><div class="mcard-sub" style="color:#e05555"><span class="live-dot" style="width:6px;height:6px"></span>priorité haute</div></div>
+  `}
+
+function renderList(){
+  let list=tickets;
+  if(flt!=='all') list=list.filter(x=>x.status===flt);
+  if(srch) list=list.filter(x=>x.title.toLowerCase().includes(srch)||x.user.toLowerCase().includes(srch)||x.id.toLowerCase().includes(srch));
+  const el=document.getElementById('tlist');
+  if(!list.length){el.innerHTML='<div style="padding:32px;text-align:center;color:#5e5e6e"><i class="ti ti-inbox" style="font-size:26px;display:block;margin-bottom:8px;opacity:.4"></i>Aucune demande</div>';return}
+  el.innerHTML=list.map(t=>{
+    const [bg,fg]=ini(t.user);
+    return`<div class="tick${t.id===selId?' sel':''}" onclick="select('${t.id}')">
+      <div class="av" style="background:${bg};color:${fg}">${initials(t.user)}</div>
+      <div class="tick-body">
+        <div class="tick-row1"><span class="tid">${t.id}</span><span class="ttitle">${t.title}</span><span class="badge ${scls[t.status]}">${t.status}</span></div>
+        <div class="tick-row2"><span><span class="prio-dot" style="background:${pclr[t.prio]}"></span>${t.prio}</span><span><i class="ti ti-user" style="font-size:11px;vertical-align:-1px"></i> ${t.user}</span><span><i class="ti ti-clock" style="font-size:11px;vertical-align:-1px"></i> ${t.date}</span></div>
+      </div>
+    </div>`}).join('')}
+
+function select(id){
+  selId=id;
+  const t=tickets.find(x=>x.id===id);
+  if(!t) return;
+  renderList();
+  document.getElementById('rpTitle').textContent=t.id;
+  document.getElementById('cbar').style.display='flex';
+  const [bg,fg]=ini(t.user);
+  document.getElementById('detail').innerHTML=`
+    <div class="det-top"><div><div class="det-sub">${t.id} · ${t.type}</div><div class="det-title">${t.title}</div></div><span class="badge ${scls[t.status]}">${t.status}</span></div>
+    <div class="flabel">Statut</div>
+    <select class="status-sel" onchange="chgStatus('${t.id}',this.value)">
+      ${['Nouveau','En cours','Résolu','Urgent'].map(s=>`<option${s===t.status?' selected':''}>${s}</option>`).join('')}
+    </select>
+    <div class="grid2">
+      <div><div class="flabel">Demandeur</div><div class="fval"><div class="av" style="background:${bg};color:${fg};width:22px;height:22px;font-size:10px;display:inline-flex;margin-right:5px;vertical-align:middle">${initials(t.user)}</div>${t.user}</div></div>
+      <div><div class="flabel">Priorité</div><div class="fval"><span class="prio-dot" style="background:${pclr[t.prio]}"></span>${t.prio}</div></div>
+      <div><div class="flabel">Équipe</div><div class="fval">${t.team}</div></div>
+      <div><div class="flabel">Date</div><div class="fval">${t.date}</div></div>
+    </div>
+    <div class="flabel" style="margin-top:10px">Description</div>
+    <div class="fval" style="line-height:1.5;margin-top:3px">${t.desc}</div>
+    <hr class="sep">
+    <div style="font-size:12px;font-weight:500;color:#9b9ba8;margin-bottom:8px">Commentaires (${t.comments.length})</div>
+    <div id="cmmtlist">${t.comments.length?t.comments.map(c=>`<div class="cmmt"><div class="cmmt-auth">${c.a}</div><div class="cmmt-txt">${c.t}</div><div class="cmmt-time">${c.d}</div></div>`).join(''):'<div style="font-size:12px;color:#5e5e6e">Aucun commentaire.</div>'}</div>
+    <hr class="sep">
+    <div style="font-size:12px;font-weight:500;color:#9b9ba8;margin-bottom:6px">Activité</div>
+    ${t.act.map(a=>`<div class="act-item"><div class="act-icon"><i class="ti ti-clock" style="font-size:11px"></i></div><div class="act-txt">${a}</div></div>`).join('')}
+  `}
+
+function chgStatus(id,val){
+  const t=tickets.find(x=>x.id===id);
+  t.status=val;
+  t.act.push(`Statut → ${val} — maintenant`);
+  renderMetrics();renderList();select(id);showNotif(`Statut → ${val}`)}
+
+function addComment(){
+  const inp=document.getElementById('cinput'),txt=inp.value.trim();
+  if(!txt||!selId) return;
+  const t=tickets.find(x=>x.id===selId);
+  const now=new Date();
+  const time=now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+  t.comments.push({a:'Vous',t:txt,d:time});
+  t.act.push(`Commentaire ajouté — ${time}`);
+  inp.value='';select(selId);showNotif('Commentaire ajouté')}
+
+function setFilter(f,btn){
+  flt=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');renderList()}
+
+function openModal(){document.getElementById('modal').classList.add('open')}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+
+function submitTicket(){
+  const title=document.getElementById('fTitle').value.trim();
+  if(!title){document.getElementById('fTitle').focus();return}
+  const type=document.getElementById('fType').value;
+  const prio=document.getElementById('fPrio').value;
+  const user=document.getElementById('fUser').value.trim()||'Inconnu';
+  const desc=document.getElementById('fDesc').value.trim()||'Aucune description.';
+  cnt++;
+  const now=new Date();
+  const date=`${now.getDate()} mai, ${now.getHours()}:${(now.getMinutes()<10?'0':'')+now.getMinutes()}`;
+  const status=prio==='Urgente'?'Urgent':'Nouveau';
+  const t={id:`DEM-${cnt}`,title,type,status,prio,user,team:'Général',date,desc,comments:[],act:[`Ticket créé — ${date.split(', ')[1]}`]};
+  tickets.unshift(t);closeModal();renderMetrics();renderList();select(t.id);
+  showNotif(`Demande ${t.id} créée !`);
+  ['fTitle','fUser','fDesc'].forEach(i=>document.getElementById(i).value='')}
+
+function showNotif(msg){const n=document.getElementById('notif');n.textContent=msg;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),2500)}
+
+document.getElementById('searchInput').addEventListener('input',function(){srch=this.value.trim().toLowerCase();renderList()});
+document.getElementById('cinput').addEventListener('keydown',e=>{if(e.key==='Enter')addComment()});
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+
+renderMetrics();renderList();
+
+setTimeout(()=>{
+  tickets[0].comments.push({a:'Système',t:'Alerte : 3 utilisateurs supplémentaires affectés.',d:'09:31'});
+  tickets[0].act.push('Alerte système — 09:31');
+  renderMetrics();
+  if(selId===tickets[0].id) select(selId);
+  showNotif('Mise à jour auto sur DEM-1001')},8000);
+</script>
