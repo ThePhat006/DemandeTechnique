@@ -1,0 +1,437 @@
+<style>
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --bg-app: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-hover: #f1f5f9;
+  --border-color: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  
+  --brand-color: #4f46e5;
+  --brand-hover: #4338ca;
+  --brand-light: #e0e7ff;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); background: var(--bg-app); color: var(--text-main); -webkit-font-smoothing: antialiased; }
+
+.app { display: grid; grid-template-rows: 64px 1fr; height: 100vh; min-height: 700px; background: var(--bg-app); }
+
+/* Topbar */
+.topbar { background: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; z-index: 10; }
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.teams-badge { background: var(--brand-light); color: var(--brand-color); font-size: 11px; padding: 4px 10px; border-radius: var(--radius-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.topbar h1 { font-size: 16px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+.topbar-actions { display: flex; gap: 12px; align-items: center; }
+
+#searchInput { font-size: 13px; padding: 8px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-app); color: var(--text-main); width: 220px; transition: all 0.2s ease; }
+#searchInput:focus { outline: none; border-color: var(--brand-color); background: var(--bg-card); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); transition: all 0.15s ease; box-shadow: var(--shadow-sm); }
+.btn:hover { background: var(--bg-hover); border-color: var(--text-subtle); }
+.btn-primary { background: var(--brand-color); color: #fff; border-color: var(--brand-color); }
+.btn-primary:hover { background: var(--brand-hover); border-color: var(--brand-hover); }
+
+/* Main Layout */
+.main-layout { display: grid; grid-template-columns: 280px 1fr 400px; gap: 0; height: 100%; overflow: hidden; }
+
+/* Left Column: Navigation & Metrics */
+.sidebar { border-right: 1px solid var(--border-color); background: var(--bg-card); padding: 24px; display: flex; flex-direction: column; gap: 24px; overflow-y: auto; }
+.sidebar-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-subtle); letter-spacing: 0.05em; margin-bottom: 12px; }
+.metrics { display: flex; flex-direction: column; gap: 10px; }
+.metric { background: var(--bg-app); border-radius: var(--radius-md); padding: 14px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 4px; }
+.metric-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.metric-val { font-size: 24px; font-weight: 700; color: var(--text-main); }
+.metric-sub { font-size: 11px; color: var(--text-subtle); }
+
+/* Middle Column: Tickets List */
+.panel-left { display: flex; flex-direction: column; background: var(--bg-card); border-right: 1px solid var(--border-color); overflow: hidden; }
+.panel-header { padding: 18px 24px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); }
+.panel-title { font-size: 15px; font-weight: 600; color: var(--text-main); }
+
+.filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.filter-btn { font-size: 12px; padding: 6px 12px; border-radius: 20px; cursor: pointer; border: 1px solid var(--border-color); background: var(--bg-app); color: var(--text-muted); font-weight: 500; transition: all 0.15s ease; }
+.filter-btn:hover { background: var(--bg-hover); color: var(--text-main); }
+.filter-btn.active { background: var(--text-main); color: #fff; border-color: var(--text-main); }
+
+.tickets-list { overflow-y: auto; flex: 1; background: var(--bg-card); }
+.ticket { display: flex; align-items: flex-start; gap: 14px; padding: 16px 24px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: all 0.15s ease; }
+.ticket:hover { background: var(--bg-app); }
+.ticket.selected { background: #f0f4ff; border-left: 4px solid var(--brand-color); padding-left: 20px; }
+
+.ticket-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; box-shadow: var(--shadow-sm); }
+.ticket-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.ticket-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ticket-id-title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.ticket-id { font-size: 12px; font-weight: 600; color: var(--text-subtle); flex-shrink: 0; }
+.ticket-title { font-size: 13px; font-weight: 500; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.ticket-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 12px; align-items: center; }
+.ticket-meta span { display: flex; align-items: center; gap: 4px; }
+
+/* Status Badges */
+.badge { font-size: 11px; padding: 4px 10px; border-radius: 6px; flex-shrink: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+.s-new { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.s-progress { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+.s-done { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+.s-urgent { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+.prio-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.pulse { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+.pulse.live { background: #10b981; animation: pulseAnim 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+@keyframes pulseAnim { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(1.15); } }
+
+/* Right Column: Detail Panel */
+.panel-right { display: flex; flex-direction: column; background: var(--bg-card); overflow: hidden; border-left: none; }
+.detail { padding: 24px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+.detail-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-subtle); gap: 12px; font-size: 13px; text-align: center; }
+.detail-empty i { font-size: 40px; color: var(--text-subtle); opacity: 0.5; }
+
+.detail-header { display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+.detail-id { font-size: 12px; font-weight: 600; color: var(--brand-color); text-transform: uppercase; letter-spacing: 0.05em; }
+.detail-title { font-size: 18px; font-weight: 700; color: var(--text-main); line-height: 1.3; }
+
+.meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; background: var(--bg-app); padding: 16px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
+.field-row { display: flex; flex-direction: column; gap: 4px; }
+.field-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.field-val { font-size: 13px; color: var(--text-main); font-weight: 500; display: flex; align-items: center; }
+
+.status-select { padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 12px; font-weight: 600; cursor: pointer; background: var(--bg-card); color: var(--text-main); width: 100%; transition: border-color 0.15s; }
+.status-select:focus { outline: none; border-color: var(--brand-color); }
+
+.description-box { line-height: 1.6; font-size: 13px; color: #334155; padding: 4px 0; }
+
+/* Comments Section */
+.comments-section { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+.comments { display: flex; flex-direction: column; gap: 10px; }
+.comment { background: var(--bg-app); border-radius: var(--radius-md); padding: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 4px; }
+.comment-author { font-size: 12px; font-weight: 600; color: var(--text-main); }
+.comment-text { font-size: 13px; color: #334155; line-height: 1.5; }
+.comment-time { font-size: 11px; color: var(--text-subtle); align-self: flex-end; }
+
+.new-comment { display: flex; gap: 8px; padding: 16px 24px; border-top: 1px solid var(--border-color); background: var(--bg-card); align-items: center; }
+.new-comment input { flex: 1; font-size: 13px; padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-app); color: var(--text-main); transition: all 0.2s; }
+.new-comment input:focus { outline: none; border-color: var(--brand-color); background: var(--bg-card); }
+
+/* Activity Stream */
+.activity-list { display: flex; flex-direction: column; gap: 8px; }
+.activity-item { display: flex; gap: 10px; align-items: center; font-size: 12px; color: var(--text-muted); padding: 4px 0; }
+.activity-icon { color: var(--text-subtle); display: flex; align-items: center; }
+
+/* Modals & Popups */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 100; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 28px; width: 460px; max-width: 95%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+.modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-app); color: var(--text-main); font-size: 13px; font-family: var(--font-sans); transition: all 0.15s; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--brand-color); background: var(--bg-card); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+.form-group textarea { resize: vertical; min-height: 80px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+.divider { border: none; border-top: 1px solid var(--border-color); margin: 4px 0; }
+
+.notif { position: fixed; bottom: 24px; right: 24px; background: var(--text-main); color: #fff; padding: 12px 20px; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; z-index: 200; opacity: 0; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; box-shadow: var(--shadow-md); }
+.notif.show { opacity: 1; transform: translateY(0); }
+
+/* Utility Screen Reader class */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+</style>
+
+<h2 class="sr-only">Outil de gestion et suivi des demandes — tableau de bord interactif avec liste de tickets, filtres par statut, détails et commentaires</h2>
+
+<div class="app" id="app" style="position:relative">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="teams-badge">Teams</span>
+      <h1><i class="ti ti-ticket" aria-hidden="true" style="font-size:18px;"></i>Gestion des demandes</h1>
+      <span style="font-size:12px; color:var(--text-muted); display:flex; align-items:center; margin-left:8px;"><span class="pulse live"></span>En direct</span>
+    </div>
+    <div class="topbar-actions">
+      <input type="text" id="searchInput" placeholder="Rechercher une demande...">
+      <button class="btn btn-primary" onclick="openModal()"><i class="ti ti-plus" aria-hidden="true"></i> Nouvelle demande</button>
+    </div>
+  </div>
+
+  <!-- Main Multi-Column Content -->
+  <div class="main-layout">
+    
+    <!-- Sidebar: Contient les indicateurs globaux -->
+    <div class="sidebar">
+      <div>
+        <div class="sidebar-section-title">Indicateurs clés</div>
+        <div class="metrics" id="metricsBar"></div>
+      </div>
+    </div>
+
+    <!-- Center Panel: Liste des demandes -->
+    <div class="panel-left">
+      <div class="panel-header">
+        <span class="panel-title">Toutes les demandes</span>
+        <div class="filters">
+          <button class="filter-btn active" onclick="filterTickets('all',this)">Tout</button>
+          <button class="filter-btn" onclick="filterTickets('Nouveau',this)">Nouveaux</button>
+          <button class="filter-btn" onclick="filterTickets('En cours',this)">En cours</button>
+          <button class="filter-btn" onclick="filterTickets('Résolu',this)">Résolus</button>
+          <button class="filter-btn" onclick="filterTickets('Urgent',this)">Urgents</button>
+        </div>
+      </div>
+      <div class="tickets-list" id="ticketsList"></div>
+    </div>
+
+    <!-- Right Panel: Détail de la demande sélectionnée -->
+    <div class="panel-right">
+      <div class="panel-header">
+        <span class="panel-title" id="detailPanelTitle">Détails de la demande</span>
+      </div>
+      <div class="detail" id="detailPanel">
+        <div class="detail-empty">
+          <i class="ti ti-click"></i>
+          <span>Sélectionnez un ticket pour afficher ses détails, commentaires et historique d'activités.</span>
+        </div>
+      </div>
+      <div class="new-comment" id="commentBar" style="display:none">
+        <input type="text" id="commentInput" placeholder="Ajouter un commentaire de suivi…">
+        <button class="btn btn-primary" style="padding:10px" onclick="addComment()"><i class="ti ti-send" aria-hidden="true"></i></button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Creation Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h2><i class="ti ti-plus" aria-hidden="true"></i> Nouvelle demande</h2>
+      <div class="form-group"><label>Titre de la demande</label><input type="text" id="fTitle" placeholder="Ex: Problème de connexion VPN"></div>
+      <div class="form-group"><label>Catégorie / Type</label>
+        <select id="fType"><option>IT / Support</option><option>RH / Administration</option><option>Infrastructure</option><option>Logiciel</option><option>Accès / Permissions</option></select>
+      </div>
+      <div class="form-group"><label>Niveau de Priorité</label>
+        <select id="fPrio"><option>Normale</option><option>Haute</option><option>Urgente</option></select>
+      </div>
+      <div class="form-group"><label>Demandeur</label><input type="text" id="fUser" placeholder="Votre nom complet"></div>
+      <div class="form-group"><label>Description détaillée</label><textarea id="fDesc" placeholder="Veuillez décrire précisément les symptômes ou besoins..."></textarea></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal()">Annuler</button>
+        <button class="btn btn-primary" onclick="submitTicket()"><i class="ti ti-check" aria-hidden="true"></i> Soumettre la demande</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Banner -->
+  <div class="notif" id="notif"></div>
+</div>
+
+<script>
+const avatarColors=[['#eff6ff','#1e40af'],['#fffbeb','#92400e'],['#f0fdf4','#166534'],['#fdf2f8','#9d174d'],['#f5f3ff','#5b21b6'],['#f0fdfa','#0f766e']];
+const statusClass={Nouveau:'s-new','En cours':'s-progress',Résolu:'s-done',Urgent:'s-urgent'};
+const prioColor={Normale:'#10b981',Haute:'#f59e0b',Urgente:'#ef4444'};
+
+let counter=1008;
+let selectedId=null;
+let currentFilter='all';
+let searchQuery='';
+
+let tickets=[
+  {id:'DEM-1001',title:'Impossible de se connecter au VPN depuis hier',type:'IT / Support',status:'Urgent',prio:'Urgente',user:'Marc Leblanc',team:'Infrastructure',date:'28 mai, 09:14',desc:'Plusieurs utilisateurs du bureau de Gatineau signalent une impossibilité de connexion au VPN depuis hier matin. Erreur 800.',comments:[{author:'Sophie T.',text:'Ticket reçu, escalade en cours.',time:'09:22'}],activity:['Ticket créé — 09:14','Assigné à Sophie T. — 09:18']},
+  {id:'DEM-1002',title:'Mise à jour des droits d\'accès SharePoint',type:'Accès / Permissions',status:'En cours',prio:'Normale',user:'Julie Morin',team:'RH',date:'28 mai, 08:45',desc:'Besoin d\'ajout de 3 nouveaux membres à l\'équipe Marketing sur SharePoint avec accès contributeur.',comments:[{author:'Admin IT',text:'En cours de traitement, délai estimé 1h.',time:'09:05'}],activity:['Ticket créé — 08:45','En cours — 09:00']},
+  {id:'DEM-1003',title:'Nouveau poste à configurer — salle B12',type:'IT / Support',status:'Nouveau',prio:'Normale',user:'Patrick Gagnon',team:'Logistique',date:'27 mai, 16:30',desc:'Déploiement d\'un nouveau poste de travail Windows 11 dans la salle de conférence B12. Installation Office 365 requise.',comments:[],activity:['Ticket créé — 16:30']},
+  {id:'DEM-1004',title:'Logiciel de paie — erreur lors de l\'export',type:'Logiciel',status:'En cours',prio:'Haute',user:'Nathalie Côté',team:'RH',date:'27 mai, 14:10',desc:'L\'export mensuel en CSV du logiciel de paie génère une erreur de format depuis la dernière mise à jour.',comments:[{author:'Dev Support',text:'Patch disponible demain matin.',time:'15:00'},{author:'Nathalie C.',text:'Merci, on attend le patch.',time:'15:05'}],activity:['Ticket créé — 14:10','Escaladé — 14:45','En cours — 15:00']},
+  {id:'DEM-1005',title:'Réinitialisation mot de passe — compte bloqué',type:'Accès / Permissions',status:'Résolu',prio:'Normale',user:'Éric Lavoie',team:'Ventes',date:'27 mai, 10:00',desc:'Compte AD bloqué après plusieurs tentatives. Réinitialisation requise.',comments:[{author:'Admin IT',text:'Compte débloqué, nouveau mdp envoyé par courriel sécurisé.',time:'10:18'}],activity:['Ticket créé — 10:00','Résolu — 10:18']},
+  {id:'DEM-1006',title:'Imprimante réseau hors ligne — étape 3',type:'Infrastructure',status:'Résolu',prio:'Normale',user:'Carole Fleury',team:'Comptabilité',date:'26 mai, 11:30',desc:'L\'imprimante HP LaserJet Pro 402 de l\'étage 3 n\'est plus détectée sur le réseau.',comments:[{author:'Tech Support',text:'Redémarrage du spooler et reconfiguration IP effectués. Résolu.',time:'13:00'}],activity:['Ticket créé — 11:30','En cours — 12:10','Résolu — 13:00']},
+  {id:'DEM-1007',title:'Demande de licences Teams supplémentaires',type:'Logiciel',status:'Nouveau',prio:'Haute',user:'Direction IT',team:'IT',date:'28 mai, 07:00',desc:'5 nouvelles licences Microsoft Teams nécessaires pour l\'équipe de projet Horizon.',comments:[],activity:['Ticket créé — 07:00']},
+];
+
+function getInitials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+function getAvatarColor(name){const i=name.charCodeAt(0)%avatarColors.length;return avatarColors[i]}
+
+function renderMetrics(){
+  const total=tickets.length;
+  const nouveau=tickets.filter(t=>t.status==='Nouveau').length;
+  const enCours=tickets.filter(t=>t.status==='En cours').length;
+  const urgent=tickets.filter(t=>t.status==='Urgent').length;
+  document.getElementById('metricsBar').innerHTML=`
+    <div class="metric"><div class="metric-label">Total des demandes</div><div class="metric-val" id="m-total">${total}</div><div class="metric-sub">Enregistrées</div></div>
+    <div class="metric"><div class="metric-label">Nouveaux tickets</div><div class="metric-val" style="color:#1d4ed8">${nouveau}</div><div class="metric-sub">En attente de prise en charge</div></div>
+    <div class="metric"><div class="metric-label">En cours</div><div class="metric-val" style="color:#b45309">${enCours}</div><div class="metric-sub">Interventions actives</div></div>
+    <div class="metric"><div class="metric-label">Urgents</div><div class="metric-val" style="color:#b91c1c">${urgent}</div><div class="metric-sub"><span class="pulse live"></span>Action requise immédiate</div></div>
+  `;
+}
+
+function renderTickets(){
+  const list=document.getElementById('ticketsList');
+  let filtered=tickets;
+  if(currentFilter!=='all') filtered=filtered.filter(t=>t.status===currentFilter);
+  if(searchQuery) filtered=filtered.filter(t=>t.title.toLowerCase().includes(searchQuery)||t.user.toLowerCase().includes(searchQuery)||t.id.toLowerCase().includes(searchQuery));
+  if(!filtered.length){list.innerHTML='<div style="padding:48px 24px;text-align:center;color:var(--text-subtle);font-size:13px"><i class="ti ti-inbox" style="font-size:32px;display:block;margin-bottom:12px;opacity:0.5"></i>Aucune demande trouvée</div>';return;}
+  list.innerHTML=filtered.map(t=>{
+    const [bg,fg]=getAvatarColor(t.user);
+    const sel=t.id===selectedId?' selected':'';
+    return`<div class="ticket${sel}" onclick="selectTicket('${t.id}')">
+      <div class="ticket-avatar" style="background:${bg};color:${fg}">${getInitials(t.user)}</div>
+      <div class="ticket-body">
+        <div class="ticket-top">
+          <div class="ticket-id-title">
+            <span class="ticket-id">${t.id}</span>
+            <span class="ticket-title">${t.title}</span>
+          </div>
+          <span class="badge ${statusClass[t.status]}">${t.status}</span>
+        </div>
+        <div class="ticket-meta">
+          <span><span class="prio-dot" style="background:${prioColor[t.prio]}"></span>${t.prio}</span>
+          <span><i class="ti ti-user" style="font-size:12px"></i> ${t.user}</span>
+          <span><i class="ti ti-clock" style="font-size:12px"></i> ${t.date}</span>
+        </div>
+      </div>
+    </div>`}).join('');
+}
+
+function selectTicket(id){
+  selectedId=id;
+  const t=tickets.find(x=>x.id===id);
+  if(!t) return;
+  renderTickets();
+  document.getElementById('detailPanelTitle').textContent="Détails : " + t.id;
+  document.getElementById('commentBar').style.display='flex';
+  const [bg,fg]=getAvatarColor(t.user);
+  document.getElementById('detailPanel').innerHTML=`
+    <div class="detail-header">
+      <div class="detail-id">${t.type}</div>
+      <div class="detail-title">${t.title}</div>
+    </div>
+    
+    <div class="meta-grid">
+      <div class="field-row"><div class="field-label">Statut global</div>
+        <div style="margin-top:4px">
+          <select class="status-select" onchange="changeStatus('${t.id}',this.value)">
+            ${['Nouveau','En cours','Résolu','Urgent'].map(s=>`<option${s===t.status?' selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="field-row"><div class="field-label">Priorité</div><div class="field-val" style="margin-top:8px"><span class="prio-dot" style="background:${prioColor[t.prio]}"></span>&nbsp;${t.prio}</div></div>
+      <div class="field-row"><div class="field-label">Demandeur</div><div class="field-val" style="margin-top:6px"><div class="ticket-avatar" style="background:${bg};color:${fg};width:22px;height:22px;font-size:9px;display:inline-flex;margin-right:6px;vertical-align:middle">${getInitials(t.user)}</div>${t.user}</div></div>
+      <div class="field-row"><div class="field-label">Équipe & Date</div><div class="field-val" style="margin-top:6px; color:var(--text-muted); font-size:12px;">${t.team} · ${t.date}</div></div>
+    </div>
+
+    <div class="field-row"><div class="field-label">Description du problème</div><div class="field-val description-box">${t.desc}</div></div>
+    
+    <hr class="divider">
+    
+    <div class="comments-section">
+      <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">Fils de discussion (${t.comments.length})</div>
+      <div class="comments" id="commentsList">
+        ${t.comments.length?t.comments.map(c=>`<div class="comment"><div class="comment-author">${c.author}</div><div class="comment-text">${c.text}</div><div class="comment-time">${c.time}</div></div>`).join(''):'<div style="font-size:12px;color:var(--text-subtle);padding:8px 0;">Aucun commentaire ou note pour le moment.</div>'}
+      </div>
+    </div>
+    
+    <hr class="divider">
+    
+    <div class="comments-section">
+      <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">Historique des activités</div>
+      <div class="activity-list">
+        ${t.activity.map(a=>`<div class="activity-item"><div class="activity-icon"><i class="ti ti-history" style="font-size:13px"></i></div><div class="activity-text">${a}</div></div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function changeStatus(id,val){
+  const t=tickets.find(x=>x.id===id);
+  if(!t) return;
+  t.status=val;
+  t.activity.push(`Statut mis à jour → ${val} — maintenant`);
+  renderMetrics();
+  renderTickets();
+  selectTicket(id);
+  showNotif(`Statut mis à jour : ${val}`);
+}
+
+function addComment(){
+  const inp=document.getElementById('commentInput');
+  const txt=inp.value.trim();
+  if(!txt||!selectedId) return;
+  const t=tickets.find(x=>x.id===selectedId);
+  const now=new Date();
+  const time=now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+  t.comments.push({author:'Vous',text:txt,time});
+  t.activity.push(`Commentaire ajouté — ${time}`);
+  inp.value='';
+  selectTicket(selectedId);
+  showNotif('Commentaire ajouté avec succès');
+}
+
+function filterTickets(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTickets();
+}
+
+function openModal(){document.getElementById('modalOverlay').classList.add('open')}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open')}
+
+function submitTicket(){
+  const title=document.getElementById('fTitle').value.trim();
+  const type=document.getElementById('fType').value;
+  const prio=document.getElementById('fPrio').value;
+  const user=document.getElementById('fUser').value.trim()||'Inconnu';
+  const desc=document.getElementById('fDesc').value.trim()||'Aucune description.';
+  if(!title){document.getElementById('fTitle').focus();return;}
+  counter++;
+  const now=new Date();
+  const date=`${now.getDate()} mai, ${now.getHours()}:${(now.getMinutes()<10?'0':'')+now.getMinutes()}`;
+  const status=prio==='Urgente'?'Urgent':'Nouveau';
+  const t={id:`DEM-${counter}`,title,type,status,prio,user,team:'Général',date,desc,comments:[],activity:[`Ticket créé — ${date.split(', ')[1]}`]};
+  tickets.unshift(t);
+  closeModal();
+  renderMetrics();
+  renderTickets();
+  selectTicket(t.id);
+  showNotif(`Demande ${t.id} créée avec succès !`);
+  document.getElementById('fTitle').value='';document.getElementById('fUser').value='';document.getElementById('fDesc').value='';
+}
+
+function showNotif(msg){
+  const n=document.getElementById('notif');
+  n.textContent=msg;
+  n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'),2500);
+}
+
+document.getElementById('searchInput').addEventListener('input',function(){
+  searchQuery=this.value.trim().toLowerCase();
+  renderTickets();
+});
+
+document.getElementById('commentInput').addEventListener('keydown',function(e){
+  if(e.key==='Enter') addComment();
+});
+
+document.getElementById('modalOverlay').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+
+renderMetrics();
+renderTickets();
+
+setTimeout(()=>{
+  tickets[0].comments.push({author:'Système',text:'Alerte : 3 utilisateurs supplémentaires affectés.',time:'09:31'});
+  tickets[0].activity.push('Alerte système — 09:31');
+  renderMetrics();
+  if(selectedId===tickets[0].id) selectTicket(selectedId);
+  showNotif('🔔 Mise à jour automatique sur DEM-1001');
+},7000);
+</script>
