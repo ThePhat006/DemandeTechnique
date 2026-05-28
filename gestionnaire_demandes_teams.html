@@ -1,0 +1,336 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.app{display:flex;flex-direction:column;height:100%;min-height:600px;background:var(--color-background-tertiary)}
+.topbar{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.teams-badge{background:#5B5EA6;color:#fff;font-size:11px;padding:3px 8px;border-radius:4px;font-weight:500}
+.topbar h1{font-size:16px;font-weight:500;color:var(--color-text-primary)}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);transition:background 0.15s}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:#5B5EA6;color:#fff;border-color:#5B5EA6}
+.btn-primary:hover{background:#4a4d8c}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px 20px 0}
+.metric{background:var(--color-background-primary);border-radius:var(--border-radius-md);padding:12px 14px;border:0.5px solid var(--color-border-tertiary)}
+.metric-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.metric-val{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.metric-sub{font-size:11px;margin-top:2px}
+.content{display:flex;flex:1;gap:0;padding:16px 20px;gap:14px;overflow:hidden}
+.panel{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;overflow:hidden}
+.panel-left{flex:1;min-width:0}
+.panel-right{width:280px;flex-shrink:0}
+.panel-header{padding:12px 16px;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.filters{display:flex;gap:6px;align-items:center}
+.filter-btn{font-size:12px;padding:4px 10px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:all 0.15s}
+.filter-btn.active{background:#5B5EA6;color:#fff;border-color:#5B5EA6}
+.tickets-list{overflow-y:auto;flex:1}
+.ticket{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:0.5px solid var(--color-border-tertiary);cursor:pointer;transition:background 0.12s;position:relative}
+.ticket:hover{background:var(--color-background-secondary)}
+.ticket.selected{background:var(--color-background-info)}
+.ticket-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
+.ticket-body{flex:1;min-width:0}
+.ticket-top{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.ticket-id{font-size:11px;color:var(--color-text-tertiary)}
+.ticket-title{font-size:13px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.badge{font-size:11px;padding:2px 8px;border-radius:20px;flex-shrink:0;font-weight:500}
+.s-new{background:#E6F1FB;color:#185FA5}
+.s-progress{background:#FAEEDA;color:#854F0B}
+.s-done{background:#EAF3DE;color:#3B6D11}
+.s-urgent{background:#FCEBEB;color:#A32D2D}
+.ticket-meta{font-size:12px;color:var(--color-text-secondary);display:flex;gap:8px}
+.pulse{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px;vertical-align:middle}
+.pulse.live{background:#22c55e;animation:pulseAnim 1.4s ease-in-out infinite}
+@keyframes pulseAnim{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+.detail{padding:16px;flex:1;overflow-y:auto}
+.detail-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--color-text-tertiary);gap:8px;font-size:13px}
+.detail-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.detail-id{font-size:12px;color:var(--color-text-tertiary);margin-bottom:4px}
+.detail-title{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.field-row{margin-bottom:10px}
+.field-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em}
+.field-val{font-size:13px;color:var(--color-text-primary)}
+.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:12px 0}
+.comments{display:flex;flex-direction:column;gap:8px}
+.comment{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px}
+.comment-author{font-size:11px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.comment-text{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.comment-time{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.new-comment{display:flex;gap:8px;padding:10px 16px;border-top:0.5px solid var(--color-border-tertiary);align-items:center}
+.new-comment input{flex:1;font-size:13px;padding:7px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary)}
+.modal-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.35);display:none;align-items:center;justify-content:center;z-index:100;border-radius:var(--border-radius-lg)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:20px;width:420px;max-width:95%}
+.modal h2{font-size:16px;font-weight:500;margin-bottom:16px}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:8px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);font-size:13px;font-family:var(--font-sans)}
+.form-group textarea{resize:vertical;min-height:70px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.notif{position:fixed;bottom:20px;right:20px;background:#22c55e;color:#fff;padding:10px 16px;border-radius:var(--border-radius-md);font-size:13px;z-index:200;opacity:0;transition:opacity 0.3s;pointer-events:none}
+.notif.show{opacity:1}
+.status-select{padding:4px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:12px;font-weight:500;cursor:pointer;background:var(--color-background-secondary);color:var(--color-text-primary)}
+.prio-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+.activity-item{display:flex;gap:8px;align-items:flex-start;font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.activity-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+.activity-text{color:var(--color-text-secondary);flex:1;line-height:1.4}
+.activity-time{color:var(--color-text-tertiary);font-size:11px;margin-top:1px}
+</style>
+
+<h2 class="sr-only">Outil de gestion et suivi des demandes — tableau de bord interactif avec liste de tickets, filtres par statut, détails et commentaires</h2>
+
+<div class="app" id="app" style="position:relative">
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="teams-badge">Teams</span>
+    <h1><i class="ti ti-ticket" aria-hidden="true" style="font-size:18px;vertical-align:-3px;margin-right:4px"></i>Gestion des demandes</h1>
+    <span style="font-size:12px;color:var(--color-text-secondary)"><span class="pulse live"></span>En direct</span>
+  </div>
+  <div class="topbar-actions">
+    <input type="text" id="searchInput" placeholder="Rechercher…" style="font-size:13px;padding:6px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);width:160px">
+    <button class="btn btn-primary" onclick="openModal()"><i class="ti ti-plus" aria-hidden="true"></i> Nouvelle demande</button>
+  </div>
+</div>
+
+<div class="metrics" id="metricsBar"></div>
+
+<div class="content">
+  <div class="panel panel-left">
+    <div class="panel-header">
+      <span class="panel-title">Toutes les demandes</span>
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterTickets('all',this)">Tout</button>
+        <button class="filter-btn" onclick="filterTickets('Nouveau',this)">Nouveaux</button>
+        <button class="filter-btn" onclick="filterTickets('En cours',this)">En cours</button>
+        <button class="filter-btn" onclick="filterTickets('Résolu',this)">Résolus</button>
+        <button class="filter-btn" onclick="filterTickets('Urgent',this)">Urgents</button>
+      </div>
+    </div>
+    <div class="tickets-list" id="ticketsList"></div>
+  </div>
+
+  <div class="panel panel-right">
+    <div class="panel-header">
+      <span class="panel-title" id="detailPanelTitle">Détail</span>
+    </div>
+    <div class="detail" id="detailPanel">
+      <div class="detail-empty"><i class="ti ti-click" style="font-size:32px;opacity:0.3"></i><span>Sélectionnez un ticket</span></div>
+    </div>
+    <div class="new-comment" id="commentBar" style="display:none">
+      <input type="text" id="commentInput" placeholder="Ajouter un commentaire…">
+      <button class="btn btn-primary" style="padding:7px 10px" onclick="addComment()"><i class="ti ti-send" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2><i class="ti ti-plus" aria-hidden="true"></i> Nouvelle demande</h2>
+    <div class="form-group"><label>Titre</label><input type="text" id="fTitle" placeholder="Ex: Problème de connexion VPN"></div>
+    <div class="form-group"><label>Type</label>
+      <select id="fType"><option>IT / Support</option><option>RH / Administration</option><option>Infrastructure</option><option>Logiciel</option><option>Accès / Permissions</option></select>
+    </div>
+    <div class="form-group"><label>Priorité</label>
+      <select id="fPrio"><option>Normale</option><option>Haute</option><option>Urgente</option></select>
+    </div>
+    <div class="form-group"><label>Demandeur</label><input type="text" id="fUser" placeholder="Votre nom"></div>
+    <div class="form-group"><label>Description</label><textarea id="fDesc" placeholder="Décrivez votre demande…"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="submitTicket()"><i class="ti ti-check" aria-hidden="true"></i> Soumettre</button>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+</div>
+
+<script>
+const avatarColors=[['#E6F1FB','#185FA5'],['#FAEEDA','#854F0B'],['#EAF3DE','#3B6D11'],['#FBEAF0','#993556'],['#EEEDFE','#534AB7'],['#E1F5EE','#0F6E56']];
+const statusClass={Nouveau:'s-new','En cours':'s-progress',Résolu:'s-done',Urgent:'s-urgent'};
+const prioColor={Normale:'#22c55e',Haute:'#f59e0b',Urgente:'#ef4444'};
+
+let counter=1008;
+let selectedId=null;
+let currentFilter='all';
+let searchQuery='';
+
+let tickets=[
+  {id:'DEM-1001',title:'Impossible de se connecter au VPN depuis hier',type:'IT / Support',status:'Urgent',prio:'Urgente',user:'Marc Leblanc',team:'Infrastructure',date:'28 mai, 09:14',desc:'Plusieurs utilisateurs du bureau de Gatineau signalent une impossibilité de connexion au VPN depuis hier matin. Erreur 800.',comments:[{author:'Sophie T.',text:'Ticket reçu, escalade en cours.',time:'09:22'}],activity:['Ticket créé — 09:14','Assigné à Sophie T. — 09:18']},
+  {id:'DEM-1002',title:'Mise à jour des droits d\'accès SharePoint',type:'Accès / Permissions',status:'En cours',prio:'Normale',user:'Julie Morin',team:'RH',date:'28 mai, 08:45',desc:'Besoin d\'ajout de 3 nouveaux membres à l\'équipe Marketing sur SharePoint avec accès contributeur.',comments:[{author:'Admin IT',text:'En cours de traitement, délai estimé 1h.',time:'09:05'}],activity:['Ticket créé — 08:45','En cours — 09:00']},
+  {id:'DEM-1003',title:'Nouveau poste à configurer — salle B12',type:'IT / Support',status:'Nouveau',prio:'Normale',user:'Patrick Gagnon',team:'Logistique',date:'27 mai, 16:30',desc:'Déploiement d\'un nouveau poste de travail Windows 11 dans la salle de conférence B12. Installation Office 365 requise.',comments:[],activity:['Ticket créé — 16:30']},
+  {id:'DEM-1004',title:'Logiciel de paie — erreur lors de l\'export',type:'Logiciel',status:'En cours',prio:'Haute',user:'Nathalie Côté',team:'RH',date:'27 mai, 14:10',desc:'L\'export mensuel en CSV du logiciel de paie génère une erreur de format depuis la dernière mise à jour.',comments:[{author:'Dev Support',text:'Patch disponible demain matin.',time:'15:00'},{author:'Nathalie C.',text:'Merci, on attend le patch.',time:'15:05'}],activity:['Ticket créé — 14:10','Escaladé — 14:45','En cours — 15:00']},
+  {id:'DEM-1005',title:'Réinitialisation mot de passe — compte bloqué',type:'Accès / Permissions',status:'Résolu',prio:'Normale',user:'Éric Lavoie',team:'Ventes',date:'27 mai, 10:00',desc:'Compte AD bloqué après plusieurs tentatives. Réinitialisation requise.',comments:[{author:'Admin IT',text:'Compte débloqué, nouveau mdp envoyé par courriel sécurisé.',time:'10:18'}],activity:['Ticket créé — 10:00','Résolu — 10:18']},
+  {id:'DEM-1006',title:'Imprimante réseau hors ligne — étage 3',type:'Infrastructure',status:'Résolu',prio:'Normale',user:'Carole Fleury',team:'Comptabilité',date:'26 mai, 11:30',desc:'L\'imprimante HP LaserJet Pro 402 de l\'étage 3 n\'est plus détectée sur le réseau.',comments:[{author:'Tech Support',text:'Redémarrage du spooler et reconfiguration IP effectués. Résolu.',time:'13:00'}],activity:['Ticket créé — 11:30','En cours — 12:10','Résolu — 13:00']},
+  {id:'DEM-1007',title:'Demande de licences Teams supplémentaires',type:'Logiciel',status:'Nouveau',prio:'Haute',user:'Direction IT',team:'IT',date:'28 mai, 07:00',desc:'5 nouvelles licences Microsoft Teams nécessaires pour l\'équipe de projet Horizon.',comments:[],activity:['Ticket créé — 07:00']},
+];
+
+function getInitials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+function getAvatarColor(name){const i=name.charCodeAt(0)%avatarColors.length;return avatarColors[i]}
+
+function renderMetrics(){
+  const total=tickets.length;
+  const nouveau=tickets.filter(t=>t.status==='Nouveau').length;
+  const enCours=tickets.filter(t=>t.status==='En cours').length;
+  const urgent=tickets.filter(t=>t.status==='Urgent').length;
+  const resolu=tickets.filter(t=>t.status==='Résolu').length;
+  document.getElementById('metricsBar').innerHTML=`
+    <div class="metric"><div class="metric-label">Total</div><div class="metric-val" id="m-total">${total}</div><div class="metric-sub" style="color:var(--color-text-tertiary)">demandes</div></div>
+    <div class="metric"><div class="metric-label">Nouveaux</div><div class="metric-val" style="color:#185FA5">${nouveau}</div><div class="metric-sub" style="color:#185FA5">en attente</div></div>
+    <div class="metric"><div class="metric-label">En cours</div><div class="metric-val" style="color:#854F0B">${enCours}</div><div class="metric-sub" style="color:#854F0B">actifs</div></div>
+    <div class="metric"><div class="metric-label">Urgents</div><div class="metric-val" style="color:#A32D2D">${urgent}</div><div class="metric-sub" style="color:#A32D2D"><span class="pulse live"></span>priorité haute</div></div>
+  `;
+}
+
+function renderTickets(){
+  const list=document.getElementById('ticketsList');
+  let filtered=tickets;
+  if(currentFilter!=='all') filtered=filtered.filter(t=>t.status===currentFilter);
+  if(searchQuery) filtered=filtered.filter(t=>t.title.toLowerCase().includes(searchQuery)||t.user.toLowerCase().includes(searchQuery)||t.id.toLowerCase().includes(searchQuery));
+  if(!filtered.length){list.innerHTML='<div style="padding:32px;text-align:center;color:var(--color-text-tertiary);font-size:13px"><i class="ti ti-inbox" style="font-size:28px;display:block;margin-bottom:8px;opacity:0.4"></i>Aucune demande trouvée</div>';return;}
+  list.innerHTML=filtered.map(t=>{
+    const [bg,fg]=getAvatarColor(t.user);
+    const sel=t.id===selectedId?' selected':'';
+    return`<div class="ticket${sel}" onclick="selectTicket('${t.id}')">
+      <div class="ticket-avatar" style="background:${bg};color:${fg}">${getInitials(t.user)}</div>
+      <div class="ticket-body">
+        <div class="ticket-top">
+          <span class="ticket-id">${t.id}</span>
+          <span class="ticket-title">${t.title}</span>
+          <span class="badge ${statusClass[t.status]}">${t.status}</span>
+        </div>
+        <div class="ticket-meta">
+          <span><span class="prio-dot" style="background:${prioColor[t.prio]}"></span>${t.prio}</span>
+          <span><i class="ti ti-user" style="font-size:11px;vertical-align:-1px"></i> ${t.user}</span>
+          <span><i class="ti ti-clock" style="font-size:11px;vertical-align:-1px"></i> ${t.date}</span>
+        </div>
+      </div>
+    </div>`}).join('');
+}
+
+function selectTicket(id){
+  selectedId=id;
+  const t=tickets.find(x=>x.id===id);
+  if(!t) return;
+  renderTickets();
+  document.getElementById('detailPanelTitle').textContent=t.id;
+  document.getElementById('commentBar').style.display='flex';
+  const [bg,fg]=getAvatarColor(t.user);
+  document.getElementById('detailPanel').innerHTML=`
+    <div class="detail-header">
+      <div><div class="detail-id">${t.id} · ${t.type}</div><div class="detail-title">${t.title}</div></div>
+      <span class="badge ${statusClass[t.status]}">${t.status}</span>
+    </div>
+    <div class="field-row"><div class="field-label">Statut</div>
+      <select class="status-select" onchange="changeStatus('${t.id}',this.value)">
+        ${['Nouveau','En cours','Résolu','Urgent'].map(s=>`<option${s===t.status?' selected':''}>${s}</option>`).join('')}
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div class="field-row"><div class="field-label">Demandeur</div><div class="field-val"><div class="ticket-avatar" style="background:${bg};color:${fg};width:24px;height:24px;font-size:10px;display:inline-flex;margin-right:6px;vertical-align:middle">${getInitials(t.user)}</div>${t.user}</div></div>
+      <div class="field-row"><div class="field-label">Priorité</div><div class="field-val"><span class="prio-dot" style="background:${prioColor[t.prio]}"></span>${t.prio}</div></div>
+      <div class="field-row"><div class="field-label">Équipe</div><div class="field-val">${t.team}</div></div>
+      <div class="field-row"><div class="field-label">Date</div><div class="field-val">${t.date}</div></div>
+    </div>
+    <div class="field-row"><div class="field-label">Description</div><div class="field-val" style="line-height:1.5;font-size:13px">${t.desc}</div></div>
+    <hr class="divider">
+    <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px">Commentaires (${t.comments.length})</div>
+    <div class="comments" id="commentsList">
+      ${t.comments.length?t.comments.map(c=>`<div class="comment"><div class="comment-author">${c.author}</div><div class="comment-text">${c.text}</div><div class="comment-time">${c.time}</div></div>`).join(''):'<div style="font-size:12px;color:var(--color-text-tertiary)">Aucun commentaire.</div>'}
+    </div>
+    <hr class="divider">
+    <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px">Activité</div>
+    ${t.activity.map(a=>`<div class="activity-item"><div class="activity-icon" style="background:var(--color-background-info);color:var(--color-text-info)"><i class="ti ti-clock" style="font-size:12px"></i></div><div><div class="activity-text">${a}</div></div></div>`).join('')}
+  `;
+}
+
+function changeStatus(id,val){
+  const t=tickets.find(x=>x.id===id);
+  if(!t) return;
+  t.status=val;
+  t.activity.push(`Statut → ${val} — maintenant`);
+  renderMetrics();
+  renderTickets();
+  selectTicket(id);
+  showNotif(`Statut mis à jour : ${val}`);
+}
+
+function addComment(){
+  const inp=document.getElementById('commentInput');
+  const txt=inp.value.trim();
+  if(!txt||!selectedId) return;
+  const t=tickets.find(x=>x.id===selectedId);
+  const now=new Date();
+  const time=now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+  t.comments.push({author:'Vous',text:txt,time});
+  t.activity.push(`Commentaire ajouté — ${time}`);
+  inp.value='';
+  selectTicket(selectedId);
+  showNotif('Commentaire ajouté');
+}
+
+function filterTickets(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTickets();
+}
+
+function openModal(){document.getElementById('modalOverlay').classList.add('open')}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open')}
+
+function submitTicket(){
+  const title=document.getElementById('fTitle').value.trim();
+  const type=document.getElementById('fType').value;
+  const prio=document.getElementById('fPrio').value;
+  const user=document.getElementById('fUser').value.trim()||'Inconnu';
+  const desc=document.getElementById('fDesc').value.trim()||'Aucune description.';
+  if(!title){document.getElementById('fTitle').focus();return;}
+  counter++;
+  const now=new Date();
+  const date=`${now.getDate()} mai, ${now.getHours()}:${(now.getMinutes()<10?'0':'')+now.getMinutes()}`;
+  const status=prio==='Urgente'?'Urgent':'Nouveau';
+  const t={id:`DEM-${counter}`,title,type,status,prio,user,team:'Général',date,desc,comments:[],activity:[`Ticket créé — ${date.split(', ')[1]}`]};
+  tickets.unshift(t);
+  closeModal();
+  renderMetrics();
+  renderTickets();
+  selectTicket(t.id);
+  showNotif(`Demande ${t.id} créée !`);
+  document.getElementById('fTitle').value='';document.getElementById('fUser').value='';document.getElementById('fDesc').value='';
+}
+
+function showNotif(msg){
+  const n=document.getElementById('notif');
+  n.textContent=msg;
+  n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'),2500);
+}
+
+document.getElementById('searchInput').addEventListener('input',function(){
+  searchQuery=this.value.trim().toLowerCase();
+  renderTickets();
+});
+
+document.getElementById('commentInput').addEventListener('keydown',function(e){
+  if(e.key==='Enter') addComment();
+});
+
+document.getElementById('modalOverlay').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+
+renderMetrics();
+renderTickets();
+
+setTimeout(()=>{
+  tickets[0].comments.push({author:'Système',text:'Alerte : 3 utilisateurs supplémentaires affectés.',time:'09:31'});
+  tickets[0].activity.push('Alerte système — 09:31');
+  renderMetrics();
+  if(selectedId===tickets[0].id) selectTicket(selectedId);
+  showNotif('🔔 Mise à jour automatique sur DEM-1001');
+},7000);
+</script>
